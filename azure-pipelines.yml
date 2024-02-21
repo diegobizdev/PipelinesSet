@@ -1,21 +1,38 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
-- production
+- main  # Puedes cambiar esto según la rama que desees utilizar
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+jobs:
+- job: BuildAndTest
+  displayName: 'Build and Test'
+  steps:
+  - script: |
+      echo 'Instalando Node.js'
+      curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+      sudo apt-get install -y nodejs
+      
+      echo 'Instalando npm'
+      sudo apt-get install -y npm
+      
+      echo 'Instalando dependencias'
+      npm install
+    displayName: 'Instalar dependencias'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+  - script: |
+      echo 'Compilando la aplicación'
+      npm run build
+    displayName: 'Compilar'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/test-results.xml'
+      testRunTitle: 'Unit Tests'
+    condition: succeededOrFailed()  # Publica los resultados de las pruebas aunque la compilación falle
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'drop'
+    displayName: 'Publicar artefactos'
