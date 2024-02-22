@@ -1,6 +1,9 @@
 trigger:
 - production  # Puedes cambiar esto según la rama que desees utilizar
 
+pr:
+- production/*
+
 pool:
   vmImage: 'ubuntu-latest'
 
