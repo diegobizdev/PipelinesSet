@@ -1,5 +1,5 @@
 trigger:
-- main  # Puedes cambiar esto según la rama que desees utilizar
+- production  # Puedes cambiar esto según la rama que desees utilizar
 
 pool:
   vmImage: 'ubuntu-latest'
