@@ -22,7 +22,7 @@ jobs:
 
   - script: |
       echo 'Compilando la aplicación'
-      npm run build
+      npm run start
     displayName: 'Compilar'
 
   - task: PublishTestResults@2
